@@ -29,6 +29,12 @@ namespace TestTcpClient
                 bytes = PrependLengthHeader(bytes);
             }
 
+            if (args.Contains("-parity"))
+            {
+                Console.WriteLine("Setting even parity on bytes");
+                bytes = EvenParity.Set(bytes);
+            }
+
             var tcpClient = new TcpClient();
             var ipAddress = ConfigurationManager.AppSettings["ipAddress"];
             var port = int.Parse(ConfigurationManager.AppSettings["port"]);
@@ -78,7 +84,7 @@ namespace TestTcpClient
         }
 
         private static byte[] PrependStx(byte[] bytes)
-{
+        {
             var bytesList = bytes.ToList();
             
             bytesList.Insert(0, 0x02);

@@ -19,19 +19,24 @@ namespace TestTcpClient
 
             if (args.Contains("-stx"))
             {
+                Console.WriteLine("Prepending the STX to the request");
                 bytes = PrependStx(bytes);
             }
 
             if (!args.Contains("-nolength"))
             {
+                Console.WriteLine("Prepending the length to the request");
                 bytes = PrependLengthHeader(bytes);
             }
 
             var tcpClient = new TcpClient();
-            tcpClient.Connect(ConfigurationManager.AppSettings["ipAddress"], int.Parse(ConfigurationManager.AppSettings["port"]));
+            var ipAddress = ConfigurationManager.AppSettings["ipAddress"];
+            var port = int.Parse(ConfigurationManager.AppSettings["port"]);
+            tcpClient.Connect(ipAddress, port);
 
             var stream = tcpClient.GetStream();
 
+            Console.WriteLine("Connected, sending {0} bytes to {1}({2})", bytes.Length, ipAddress, port);
             stream.Write(bytes, 0, bytes.Length);
 
             Console.WriteLine("Waiting for data...");

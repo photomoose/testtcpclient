@@ -16,7 +16,16 @@ namespace TestTcpClient
             var asciiRequest = request.Split('-');
 
             var bytes = asciiRequest.Select(asciiByte => byte.Parse(asciiByte, NumberStyles.HexNumber)).ToArray();
-            bytes = PrependLengthHeader(bytes);
+
+            if (args.Contains("-stx"))
+            {
+                bytes = PrependStx(bytes);
+            }
+
+            if (!args.Contains("-nolength"))
+            {
+                bytes = PrependLengthHeader(bytes);
+            }
 
             var tcpClient = new TcpClient();
             tcpClient.Connect(ConfigurationManager.AppSettings["ipAddress"], int.Parse(ConfigurationManager.AppSettings["port"]));
@@ -59,6 +68,15 @@ namespace TestTcpClient
             }
 
             bytesList.InsertRange(0, payloadLengthBytes);
+
+            return bytesList.ToArray();
+        }
+
+        private static byte[] PrependStx(byte[] bytes)
+{
+            var bytesList = bytes.ToList();
+            
+            bytesList.Insert(0, 0x02);
 
             return bytesList.ToArray();
         }

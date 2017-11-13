@@ -23,16 +23,16 @@ namespace TestTcpClient
                 bytes = PrependStx(bytes);
             }
 
-            if (!args.Contains("-nolength"))
-            {
-                Console.WriteLine("Prepending the length to the request");
-                bytes = PrependLengthHeader(bytes);
-            }
-
             if (args.Contains("-parity"))
             {
                 Console.WriteLine("Setting even parity on bytes");
                 bytes = EvenParity.Set(bytes);
+            }
+
+            if (!args.Contains("-nolength"))
+            {
+                Console.WriteLine("Prepending the length to the request");
+                bytes = PrependLengthHeader(bytes);
             }
 
             var tcpClient = new TcpClient();
